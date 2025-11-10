@@ -74,7 +74,10 @@ const app = express();
 app.use(express.json());
 app.use(cors({ origin: ALLOWED_ORIGIN ? [ALLOWED_ORIGIN] : "*" }));
 
-// نقطة اختبار
+// نقطة اختبار Render لفحص الصحّة
+app.get("/healthz", (_req, res) => res.status(200).send("ok"));
+
+// نقطة الجذر
 app.get("/", (req, res) => res.send("✅ Bot Server يعمل بنجاح!"));
 
 // نقطة استقبال من الموقع
