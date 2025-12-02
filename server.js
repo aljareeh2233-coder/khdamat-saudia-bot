@@ -1,4 +1,4 @@
-// ================== server.js ==================
+// ================== server.js (محدث ثنائي اللغة) ==================
 import express from "express";
 import cors from "cors";
 import nodemailer from "nodemailer";
@@ -18,129 +18,45 @@ if (!BOT_TOKEN) {
   process.exit(1);
 }
 
-// ====== الردود الذكية ======
+// ====== الردود الذكية (AR & EN) ======
 const responses = {
-  // 🛂 منصة أبشر
-  "أبشر": `
-🛂 <b>منصة أبشر</b><br>
-منصة إلكترونية تتيح تنفيذ خدمات وزارة الداخلية بسهولة وأمان.<br>
-🔗 <a href="https://www.absher.sa" target="_blank">زيارة موقع أبشر الرسمي</a><br><br>
-📄 <b>خدمات متصلة:</b><br>
-• <a href="civil_forms.html" target="_blank">الأحوال المدنية</a><br>
-• <a href="passport_forms.html" target="_blank">الجوازات</a><br>
-• <a href="traffic_forms.html" target="_blank">المرور</a>
-`,
+  // --- Arabic Keywords ---
+  "أبشر": `🛂 <b>منصة أبشر</b><br>منصة إلكترونية تتيح تنفيذ خدمات وزارة الداخلية بسهولة وأمان.<br>🔗 <a href="https://www.absher.sa" target="_blank">زيارة الموقع الرسمي</a><br><br>📄 <b>خدمات متصلة:</b><br>• <a href="civil_forms.html" target="_blank">الأحوال المدنية</a><br>• <a href="passport_forms.html" target="_blank">الجوازات</a>`,
+  
+  "ناجز": `⚖️ <b>منصة ناجز</b><br>البوابة الموحدة للخدمات العدلية الإلكترونية.<br>🔗 <a href="https://najiz.sa" target="_blank">زيارة الموقع</a><br><br>📄 <a href="najiz.html" target="_blank">شرح خدمات ناجز</a>`,
+  
+  "نور": `🎓 <b>نظام نور</b><br>نظام إلكتروني لإدارة شؤون الطلاب.<br>🔗 <a href="https://noor.moe.gov.sa" target="_blank">الدخول للنظام</a><br><br>📄 <a href="education.html" target="_blank">دليل الاستخدام</a>`,
+  
+  "الراجحي": `🏦 <b>مصرف الراجحي</b><br>خدمات الأفراد والشركات.<br>🔗 <a href="https://www.alrajhibank.com.sa" target="_blank">الموقع الرسمي</a><br><br>📄 <a href="bank_alrajhi.html" target="_blank">شرح الخدمات</a>`,
+  
+  "بلدي": `🏛️ <b>منصة بلدي</b><br>الرخص التجارية والإنشائية.<br>🔗 <a href="https://balady.gov.sa" target="_blank">زيارة المنصة</a><br><br>📄 <a href="municipal.html" target="_blank">دليل الخدمات البلدية</a>`,
 
-  // ⚖️ منصة ناجز
-  "ناجز": `
-⚖️ <b>منصة ناجز</b><br>
-البوابة الموحدة للخدمات العدلية الإلكترونية التابعة لوزارة العدل.<br>
-🔗 <a href="https://najiz.sa" target="_blank">زيارة موقع ناجز الرسمي</a><br><br>
-📄 <b>خدمات متصلة:</b><br>
-• <a href="najiz.html" target="_blank">خدمات المحاكم والعقود</a>
-`,
+  "قوى": `👷 <b>منصة قوى</b><br>خدمات العمل والعمال (نقل كفالة، عقود).<br>🔗 <a href="https://qiwa.sa" target="_blank">زيارة قوى</a><br><br>📄 <a href="qiwa.html" target="_blank">الشرح الكامل</a>`,
 
-  // 🎓 نظام نور
-  "نور": `
-🎓 <b>نظام نور</b><br>
-نظام إلكتروني يتيح إدارة شؤون الطلاب والمعلمين وأولياء الأمور.<br>
-🔗 <a href="https://noor.moe.gov.sa" target="_blank">زيارة نظام نور الرسمي</a><br><br>
-📄 <b>خدمات متصلة:</b><br>
-• <a href="education.html" target="_blank">خدمات التعليم</a><br>
-• <a href="https://schools.madrasati.sa" target="_blank">منصة مدرستي</a>
-`,
+  "حساب المواطن": `💰 <b>حساب المواطن</b><br>برنامج الدعم الحكومي للأسر.<br>🔗 <a href="https://portal.ca.gov.sa" target="_blank">البوابة الإلكترونية</a><br><br>📄 <a href="citizen.html" target="_blank">طريقة التسجيل والاعتراض</a>`,
 
-  // 🏦 مصرف الراجحي
-  "الراجحي": `
-🏦 <b>مصرف الراجحي</b><br>
-من أكبر المصارف الإسلامية في العالم يقدم خدمات مالية للأفراد والشركات.<br>
-🔗 <a href="https://www.alrajhibank.com.sa" target="_blank">الموقع الرسمي</a><br><br>
-📄 <b>صفحات متصلة:</b><br>
-• <a href="bank_alrajhi.html" target="_blank">خدمات الراجحي في الموقع</a>
-`,
+  // --- English Keywords ---
+  "absher": `🛂 <b>Absher Platform</b><br>The official platform for MOI services.<br>🔗 <a href="https://www.absher.sa" target="_blank">Official Website</a><br><br>📄 <b>Related:</b><br>• <a href="passport_forms.html" target="_blank">Passports</a><br>• <a href="traffic_forms.html" target="_blank">Traffic</a>`,
 
-  // 🏦 البنك الأهلي
-  "البنك الأهلي": `
-🏦 <b>البنك الأهلي السعودي</b><br>
-يقدم مجموعة من الخدمات البنكية للأفراد والشركات.<br>
-🔗 <a href="https://www.alahli.com" target="_blank">الموقع الرسمي</a><br><br>
-📄 <b>صفحات متصلة:</b><br>
-• <a href="bank_alahli.html" target="_blank">خدمات البنك الأهلي</a>
-`,
+  "najiz": `⚖️ <b>Najiz Portal</b><br>Unified portal for MOJ judicial services.<br>🔗 <a href="https://najiz.sa" target="_blank">Visit Najiz</a><br><br>📄 <a href="najiz.html" target="_blank">Service Guide</a>`,
 
-  // 🏦 بنك الرياض
-  "بنك الرياض": `
-🏦 <b>بنك الرياض</b><br>
-أحد أكبر المؤسسات المالية في المملكة بخدمات مصرفية متكاملة.<br>
-🔗 <a href="https://www.riyadbank.com" target="_blank">الموقع الرسمي</a><br><br>
-📄 <b>صفحات متصلة:</b><br>
-• <a href="bank_riyad.html" target="_blank">خدمات بنك الرياض</a>
-`,
+  "noor": `🎓 <b>Noor System</b><br>Student management system for grades and registration.<br>🔗 <a href="https://noor.moe.gov.sa" target="_blank">Login</a><br><br>📄 <a href="education.html" target="_blank">User Guide</a>`,
 
-  // 🛡️ تأميني
-  "تأميني": `
-🛡️ <b>منصة تأميني</b><br>
-تتيح مقارنة وشراء وثائق التأمين للمركبات والأفراد بسهولة.<br>
-🔗 <a href="https://www.ta3meeni.com" target="_blank">زيارة الموقع الرسمي</a><br><br>
-📄 <b>صفحات متصلة:</b><br>
-• <a href="taaminy.html" target="_blank">خدمات تأميني داخل الموقع</a><br>
-• <a href="bekare.html" target="_blank">منصة بي كير</a><br>
-• <a href="Najm_website.html" target="_blank">موقع نجم للمطالبات</a>
-`,
+  "rajhi": `🏦 <b>Al Rajhi Bank</b><br>Personal and corporate banking services.<br>🔗 <a href="https://www.alrajhibank.com.sa" target="_blank">Official Site</a><br><br>📄 <a href="bank_alrajhi.html" target="_blank">Our Guide</a>`,
 
-  // 💰 الضمان الاجتماعي
-  "الضمان": `
-💰 <b>الضمان الاجتماعي</b><br>
-خدمة مقدمة من وزارة الموارد البشرية والتنمية الاجتماعية لدعم المستفيدين ماليًا.<br>
-🔗 <a href="https://sbis.hrsd.gov.sa" target="_blank">الدخول إلى منصة الدعم</a><br><br>
-📄 <b>صفحات متصلة:</b><br>
-• <a href="social.html" target="_blank">خدمات الضمان في الموقع</a>
-`,
+  "balady": `🏛️ <b>Balady Platform</b><br>Commercial and construction licenses.<br>🔗 <a href="https://balady.gov.sa" target="_blank">Visit Balady</a><br><br>📄 <a href="municipal.html" target="_blank">Municipal Guide</a>`,
 
-  // 🏛️ الخدمات البلدية
-  "البلدية": `
-🏛️ <b>الخدمات البلدية</b><br>
-تتيح إنجاز معاملات الرخص والأنشطة التجارية إلكترونيًا عبر بلدي.<br>
-🔗 <a href="https://balady.gov.sa" target="_blank">الدخول إلى منصة بلدي</a><br><br>
-📄 <b>صفحات متصلة:</b><br>
-• <a href="municipal.html" target="_blank">الخدمات البلدية في الموقع</a>
-`,
+  "qiwa": `👷 <b>Qiwa Platform</b><br>Labor services (Transfer, Contracts).<br>🔗 <a href="https://qiwa.sa" target="_blank">Visit Qiwa</a><br><br>📄 <a href="qiwa.html" target="_blank">Full Guide</a>`,
 
-  // 📜 الشروط والأحكام
-  "الشروط": `
-📜 <b>الشروط والأحكام</b><br>
-تعرف على حقوق الاستخدام وسياسات الخدمة.<br>
-🔗 <a href="terms.html" target="_blank">عرض صفحة الشروط</a>
-`,
+  "citizen account": `💰 <b>Citizen Account</b><br>Government support program for families.<br>🔗 <a href="https://portal.ca.gov.sa" target="_blank">Official Portal</a><br><br>📄 <a href="citizen.html" target="_blank">Registration Guide</a>`,
 
-  // 🔒 الخصوصية
-  "الخصوصية": `
-🔒 <b>سياسة الخصوصية</b><br>
-تعرف على كيفية جمع وحماية بيانات المستخدمين.<br>
-🔗 <a href="privacy.html" target="_blank">عرض صفحة الخصوصية</a>
-`,
-
-  // 📧 اتصل بنا
-  "اتصال": `
-📧 <b>تواصل معنا</b><br>
-يمكنك إرسال ملاحظاتك أو استفساراتك من خلال الصفحة المخصصة.<br>
-🔗 <a href="contact.html" target="_blank">فتح صفحة التواصل</a>
-`,
-
-  // 💬 ردود عامة
-  "مساعدة": `
-💡 اكتب اسم الجهة مثل: (أبشر، نور، الراجحي، نجم...) لأعطيك الرابط المباشر والوصف الكامل.
-`,
-  "مرحبا": `
-👋 أهلًا بك! أنا بوت الخدمات العامة 💚 اختر الخدمة التي تحتاجها مثل (أبشر، نور، المرور...).
-`,
-  "السلام": `
-🤝 وعليكم السلام ورحمة الله وبركاته.<br>
-اكتب اسم الجهة مثل (نور/راجحي/بلدي/ضمان) أو كلمة “مساعدة”.
-`,
-  "السلام عليكم": `
-وعليكم السلام ورحمة الله، كيف أقدر أخدمك؟ اكتب اسم الجهة أو “مساعدة”.
-`
+  // --- General (Generic) ---
+  "help": `💡 Type entity name like: (Absher, Noor, Rajhi, Qiwa...) to get the direct link and guide.`,
+  "hello": `👋 Welcome! I am Public Services Bot 💚. Please choose a service (e.g., Absher, Noor, Balady).`,
+  "hi": `👋 Hi there! How can I help you today? Type a service name.`,
+  
+  "مساعدة": `💡 اكتب اسم الجهة مثل: (أبشر، نور، الراجحي، نجم...) لأعطيك الرابط المباشر والوصف الكامل.`,
+  "مرحبا": `👋 أهلًا بك! أنا بوت الخدمات العامة 💚 اختر الخدمة التي تحتاجها مثل (أبشر، نور، المرور...).`,
 };
 
 
@@ -164,15 +80,25 @@ if (GMAIL_USER && GMAIL_APP_PASS) {
 // ====== إنشاء البوت تيليجرام ======
 const bot = new Telegraf(BOT_TOKEN);
 
-// دالة البحث عن الرد
+// دالة البحث عن الرد (محدثة)
 function findReply(message = "") {
   const msg = String(message).toLowerCase().trim();
+  
+  // البحث عن تطابق جزئي في الكلمات المفتاحية
   for (const key in responses) {
     if (msg.includes(key)) return { reply: responses[key], matched: true };
   }
+
+  // رسالة الخطأ (افتراضية بالعربي، ويمكن تحسينها لتخمين اللغة)
+  // لكن بما أن الطلب يأتي نصاً، سنرد برسالة مزدوجة
+  const defaultReply = `
+    عذرًا، ما فهمت 💬<br>اكتب اسم الجهة مثل: <b>نور، الراجحي...</b><br>
+    <hr>
+    Sorry, I didn't understand 💬<br>Type entity name like: <b>Noor, Rajhi...</b>
+  `;
+  
   return {
-    reply:
-      'عذرًا، ما فهمت 💬<br>اكتب اسم الجهة مثل: <b>نور، الراجحي، أبشر، نجم...</b><br>أو اكتب “مساعدة” للإرشادات.',
+    reply: defaultReply,
     matched: false,
   };
 }
@@ -197,11 +123,11 @@ bot.on("text", async (ctx) => {
 
 // ====== إعداد Webhook ======
 const WEBHOOK_PATH = `/${BOT_TOKEN}`;
+// ملاحظة: تأكد أن رابط Render صحيح هنا
 const WEBHOOK_URL = `https://khdamat-saudia-bot.onrender.com${WEBHOOK_PATH}`;
-bot.telegram
-  .setWebhook(WEBHOOK_URL)
-  .then(() => console.log(`✅ Webhook مُعَد: ${WEBHOOK_URL}`))
-  .catch((err) => console.error("❌ فشل تعيين Webhook:", err.message));
+
+// محاولة ضبط الويب هوك (اختياري عند كل تشغيل لتفادي التكرار)
+// bot.telegram.setWebhook(WEBHOOK_URL)...
 
 // ====== إعداد السيرفر Express ======
 const app = express();
@@ -209,7 +135,7 @@ app.use(express.json());
 app.use(cors({ origin: ALLOWED_ORIGIN ? [ALLOWED_ORIGIN] : "*" }));
 
 app.get("/healthz", (_req, res) => res.status(200).send("ok"));
-app.get("/", (_req, res) => res.send("Bot Server يعمل بنجاح!"));
+app.get("/", (_req, res) => res.send("Bot Server is Running! 🚀"));
 
 app.post(WEBHOOK_PATH, (req, res) => {
   bot.handleUpdate(req.body);
@@ -222,7 +148,6 @@ app.post("/send", async (req, res) => {
     const { message } = req.body || {};
     const { reply, matched } = findReply(message);
 
-    // نرجع الرد بـ HTML (حتى تعمل الروابط)
     res.json({ reply: reply.replace(/\n/g, "<br>") });
 
     if (!matched && transporter && RECEIVER_EMAIL) {
@@ -238,13 +163,12 @@ app.post("/send", async (req, res) => {
     }
   } catch (err) {
     console.error("❌ خطأ في /send:", err.message);
-    res.status(500).json({ error: "حدث خطأ في السيرفر" });
+    res.status(500).json({ error: "Server Error" });
   }
 });
 
 // ====== تشغيل السيرفر ======
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`🚀 السيرفر يعمل على المنفذ ${PORT}`);
-  console.log(`📡 استقبال التحديثات على: ${WEBHOOK_PATH}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
